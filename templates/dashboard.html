@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Dashboard | CardioRiskAI</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/dashboard.css') }}">
+
+</head>
+
+<body>
+
+    <!-- ================================= -->
+    <!-- Sidebar -->
+    <!-- ================================= -->
+
+    <aside class="sidebar">
+
+        <div class="brand">
+
+            <span class="brand-heart">♥</span>
+
+            <span>CardioRiskAI</span>
+
+        </div>
+
+
+        <nav class="sidebar-nav">
+
+            <a href="/dashboard"
+               class="nav-item active">
+
+                <span>⌂</span>
+                Dashboard
+
+            </a>
+
+
+            <a href="/basic-screening"
+               class="nav-item">
+
+                <span>♡</span>
+                Basic Screening
+
+            </a>
+
+
+            <a href="/clinical-screening"
+               class="nav-item">
+
+                <span>♥</span>
+                Clinical Screening
+
+            </a>
+
+
+            <a href="/history"
+               class="nav-item">
+
+                <span>◷</span>
+                Screening History
+
+            </a>
+
+        </nav>
+
+
+        <div class="sidebar-bottom">
+
+            <button
+                class="logout-btn"
+                onclick="logoutUser()">
+
+                <span>↪</span>
+                Logout
+
+            </button>
+
+        </div>
+
+    </aside>
+
+
+    <!-- ================================= -->
+    <!-- Main content -->
+    <!-- ================================= -->
+
+    <main class="main-content">
+
+        <!-- Top bar -->
+
+        <header class="topbar">
+
+            <div>
+
+                <h1>
+                    Welcome, {{ user_name }}
+                </h1>
+
+                <p>
+                    Your heart health is important.
+                    Choose a screening option to get started.
+                </p>
+
+            </div>
+
+
+            <div class="profile-box">
+
+                <div class="profile-circle">
+                    {{ user_name[0]|upper }}
+                </div>
+
+                <span>
+                    {{ user_name }}
+                </span>
+
+            </div>
+
+        </header>
+
+
+        <!-- ================================= -->
+        <!-- Heart health banner -->
+        <!-- ================================= -->
+
+        <section class="health-banner">
+
+    <div  class="health-icon">
+
+    <svg
+        class="health-heart-svg"
+        viewBox="0 0 100 100"
+        xmlns="http://www.w3.org/2000/svg">
+
+        <!-- Heart shape -->
+        <path
+            class="heart-shape"
+            d="M50 82
+               C45 77 18 59 12 42
+               C6 25 17 13 31 13
+               C40 13 46 18 50 25
+               C54 18 60 13 69 13
+               C83 13 94 25 88 42
+               C82 59 55 77 50 82Z"
+        />
+
+        <!-- ECG pulse -->
+        <polyline
+            class="heart-ecg"
+            points="
+                16,49
+                30,49
+                36,49
+                41,37
+                46,61
+                52,49
+                60,49
+                66,49
+                71,40
+                76,57
+                82,49
+            "
+        />
+
+        </svg>
+    </div>
+
+
+            <div class="health-banner-text">
+
+                <h2>
+                    Check Your Heart Health
+                </h2>
+
+                <p>
+                    Choose a screening pathway based on
+                    the information you currently have.
+                </p>
+
+            </div>
+
+
+            <!-- ================================= -->
+            <!-- NEW PULSE RATE DISPLAY -->
+            <!-- ================================= -->
+
+            <div class="pulse-display">
+
+                <div class="pulse-heart">
+                    ♥
+                </div>
+
+                <div class="pulse-line">
+
+                    <svg
+                        viewBox="0 0 180 45"
+                        xmlns="http://www.w3.org/2000/svg">
+
+                        <polyline
+                            class="ecg-line"
+                            points="
+                                0,25
+                                25,25
+                                35,25
+                                43,8
+                                51,39
+                                60,25
+                                80,25
+                                90,25
+                                100,25
+                                108,10
+                                116,38
+                                125,25
+                                150,25
+                                180,25
+                            "
+                        />
+
+                    </svg>
+
+                </div>
+
+                <div class="pulse-info">
+
+                    <span class="pulse-label">
+                        Pulse Rate
+                    </span>
+
+                    
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================================= -->
+        <!-- Screening cards -->
+        <!-- ================================= -->
+
+        <section class="screening-grid">
+
+
+            <!-- Basic Screening -->
+
+            <div class="screening-card basic-card">
+
+                <div class="card-icon blue-icon">
+                    ♥
+                </div>
+
+                <h2>
+                    Basic Screening
+                </h2>
+
+                <p>
+                    No medical test results available?
+                    Start with lifestyle and general
+                    health information you already know.
+                </p>
+
+                <button
+                    onclick="window.location.href='/basic-screening'"
+                    class="blue-btn">
+
+                    Start Basic Screening
+
+                </button>
+
+            </div>
+
+
+            <!-- Clinical Screening -->
+
+            <div class="screening-card clinical-card">
+
+                <div class="card-icon pink-icon">
+                    ♥
+                </div>
+
+                <h2>
+                    Clinical Screening
+                </h2>
+
+                <p>
+                    Have current medical measurements
+                    such as blood pressure, cholesterol
+                    or other clinical results?
+                </p>
+
+                <button
+                    onclick="window.location.href='/clinical-screening'"
+                    class="pink-btn">
+
+                    Start Clinical Screening
+
+                </button>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================================= -->
+        <!-- Features -->
+        <!-- ================================= -->
+
+        <section class="features-section">
+
+            <h2>
+                Your Health Matters
+            </h2>
+
+
+            <div class="feature-grid">
+
+                <div class="feature-card">
+
+                    <div class="feature-icon">
+                        ♥
+                    </div>
+
+                    <div>
+
+                        <h3>
+                            Early Screening
+                        </h3>
+
+                        <p>
+                            Get an initial screening based
+                            on the information you provide.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="feature-card">
+
+                    <div class="feature-icon">
+                        ✓
+                    </div>
+
+                    <div>
+
+                        <h3>
+                            Personalized Tips
+                        </h3>
+
+                        <p>
+                            Receive lifestyle recommendations
+                            related to your provided information.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="feature-card">
+
+                    <div class="feature-icon">
+                        ◷
+                    </div>
+
+                    <div>
+
+                        <h3>
+                            Screening History
+                        </h3>
+
+                        <p>
+                            Keep track of previous screening
+                            results in one place.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================================= -->
+        <!-- Notice -->
+        <!-- ================================= -->
+
+        <div class="notice">
+
+            <strong>Important:</strong>
+
+            CardioRiskAI provides preliminary
+            heart disease screening information.
+            It does not provide a medical diagnosis.
+
+        </div>
+
+    </main>
+
+
+    <script>
+
+        async function logoutUser() {
+
+            try {
+
+                const response =
+                    await fetch(
+                        "/api/logout",
+                        {
+                            method: "POST"
+                        }
+                    );
+
+
+                if (response.ok) {
+
+                    window.location.href =
+                        "/login";
+
+                }
+
+            } catch (error) {
+
+                console.error(error);
+
+            }
+
+        }
+
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,2317 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Basic Screening - CardioRiskAI
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/screening.css') }}"
+    >
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+
+        body {
+
+            margin: 0;
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            background: #f6f8fc;
+
+            color: #1e293b;
+        }
+
+
+        .page-wrapper {
+
+            min-height: 100vh;
+
+            background: #f6f8fc;
+
+            padding: 30px;
+        }
+
+
+        .container {
+
+            max-width: 1050px;
+
+            margin: auto;
+        }
+
+
+        /* =====================================
+           HEADER
+        ===================================== */
+
+        .header-card {
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #101c3d,
+                    #243b7a
+                );
+
+            color: white;
+
+            padding: 30px;
+
+            border-radius: 18px;
+
+            margin-bottom: 25px;
+        }
+
+
+        .header-card h1 {
+
+            margin:
+                0 0 8px;
+
+            font-size: 30px;
+        }
+
+
+        .header-card p {
+
+            margin: 0;
+
+            opacity: 0.9;
+
+            line-height: 1.6;
+        }
+
+
+        /* =====================================
+           COMMON CARDS
+        ===================================== */
+
+        .form-card,
+        .result-card {
+
+            background: white;
+
+            padding: 30px;
+
+            border-radius: 18px;
+
+            box-shadow:
+                0 8px 25px
+                rgba(0, 0, 0, 0.06);
+
+            margin-bottom: 25px;
+        }
+
+
+        .section-title {
+
+            font-size: 20px;
+
+            font-weight: 700;
+
+            color: #172554;
+
+            margin-bottom: 20px;
+        }
+
+
+        /* =====================================
+           FORM
+        ===================================== */
+
+        .form-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(2, 1fr);
+
+            gap: 20px;
+        }
+
+
+        .form-group {
+
+            display: flex;
+
+            flex-direction: column;
+        }
+
+
+        .form-group label {
+
+            font-weight: 600;
+
+            color: #334155;
+
+            margin-bottom: 8px;
+        }
+
+
+        .form-group input,
+        .form-group select {
+
+            width: 100%;
+
+            padding:
+                13px 14px;
+
+            border:
+                1px solid #d8dee9;
+
+            border-radius: 10px;
+
+            font-size: 15px;
+
+            background: #fff;
+
+            outline: none;
+
+            transition: 0.2s;
+        }
+
+
+        .form-group input:focus,
+        .form-group select:focus {
+
+            border-color: #e94f88;
+
+            box-shadow:
+                0 0 0 3px
+                rgba(
+                    233,
+                    79,
+                    136,
+                    0.12
+                );
+        }
+
+
+        .form-help {
+
+            font-size: 13px;
+
+            color: #64748b;
+
+            margin-top: 5px;
+
+            line-height: 1.4;
+        }
+
+
+        /* =====================================
+           BMI
+        ===================================== */
+
+        .bmi-box {
+
+            background: #fff4f8;
+
+            border:
+                1px solid #f5bfd1;
+
+            border-radius: 10px;
+
+            padding:
+                12px 14px;
+
+            font-weight: 700;
+
+            color: #be185d;
+        }
+
+
+        /* =====================================
+           BUTTONS
+        ===================================== */
+
+        .button-row {
+
+            display: flex;
+
+            gap: 12px;
+
+            margin-top: 25px;
+
+            flex-wrap: wrap;
+        }
+
+
+        .primary-btn,
+        .secondary-btn {
+
+            border: none;
+
+            border-radius: 10px;
+
+            padding:
+                13px 22px;
+
+            font-size: 15px;
+
+            font-weight: 700;
+
+            cursor: pointer;
+
+            text-decoration: none;
+
+            display: inline-block;
+
+            transition: 0.2s;
+        }
+
+
+        .primary-btn {
+
+            background: #e94f88;
+
+            color: white;
+        }
+
+
+        .primary-btn:hover {
+
+            background: #d83d76;
+        }
+
+
+        .secondary-btn {
+
+            background: #e9edf5;
+
+            color: #1e293b;
+        }
+
+
+        .secondary-btn:hover {
+
+            background: #dfe5ef;
+        }
+
+
+        /* =====================================
+           MESSAGE
+        ===================================== */
+
+        .message-box {
+
+            display: none;
+
+            padding:
+                13px 15px;
+
+            border-radius: 10px;
+
+            margin-bottom: 20px;
+
+            font-weight: 600;
+        }
+
+
+        .error-message {
+
+            background: #fef2f2;
+
+            color: #b91c1c;
+
+            border:
+                1px solid #fecaca;
+        }
+
+
+        .success-message {
+
+            background: #f0fdf4;
+
+            color: #166534;
+
+            border:
+                1px solid #bbf7d0;
+        }
+
+
+        .loading {
+
+            display: none;
+
+            margin-top: 12px;
+
+            color: #64748b;
+
+            font-weight: 600;
+        }
+
+
+        /* =====================================
+           RESULT CARD
+           CLINICAL-STYLE FORMAT
+        ===================================== */
+
+        .result-card {
+
+            display: none;
+        }
+
+
+        .result-heading {
+
+            text-align: center;
+
+            margin-bottom: 25px;
+        }
+
+
+        .result-heading h2 {
+
+            color: #172554;
+
+            margin:
+                0 0 8px;
+
+            font-size: 30px;
+
+            font-weight: 800;
+        }
+
+
+        .result-subtitle {
+
+            color: #64748b;
+
+            font-size: 18px;
+
+            margin-top: 5px;
+
+            line-height: 1.5;
+        }
+
+
+        .score-label {
+
+            color: #475569;
+
+            font-size: 18px;
+
+            font-weight: 700;
+
+            margin-top: 22px;
+        }
+
+
+        .score {
+
+            font-size: 58px;
+
+            font-weight: 800;
+
+            line-height: 1.1;
+
+            color: #e94f88;
+
+            margin:
+                12px 0 20px;
+        }
+
+
+        .risk-badge {
+
+            display: inline-block;
+
+            padding:
+                10px 25px;
+
+            border-radius: 25px;
+
+            background: #fff1f6;
+
+            border:
+                1px solid #f5bfd1;
+
+            color: #be185d;
+
+            font-size: 20px;
+
+            font-weight: 700;
+
+            text-transform: capitalize;
+        }
+
+
+        /* =====================================
+           RESULT INFORMATION
+        ===================================== */
+
+        .result-info {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(2, 1fr);
+
+            gap: 18px;
+
+            margin-bottom: 28px;
+        }
+
+
+        .info-box {
+
+            background: #f8fafc;
+
+            padding:
+                25px 20px;
+
+            border-radius: 15px;
+
+            text-align: center;
+
+            min-height: 118px;
+
+            display: flex;
+
+            flex-direction: column;
+
+            align-items: center;
+
+            justify-content: center;
+        }
+
+
+        .info-box strong {
+
+            display: block;
+
+            color: #475569;
+
+            margin-bottom: 12px;
+
+            font-size: 18px;
+        }
+
+
+        .info-box span {
+
+            color: #172554;
+
+            font-weight: 800;
+
+            font-size: 27px;
+        }
+
+
+        /* =====================================
+           WHAT THIS MEANS
+        ===================================== */
+
+        .meaning-box {
+
+            background: #f8fafc;
+
+            padding:
+                25px 20px;
+
+            border-radius: 15px;
+
+            margin-bottom: 25px;
+
+            text-align: center;
+        }
+
+
+        .meaning-box h3 {
+
+            color: #172554;
+
+            margin:
+                0 0 14px;
+
+            font-size: 23px;
+        }
+
+
+        .meaning-box p {
+
+            color: #475569;
+
+            line-height: 1.6;
+
+            margin: 0;
+
+            font-size: 18px;
+        }
+
+
+        /* =====================================
+           REPORT ACTIONS
+        ===================================== */
+
+        .report-actions {
+
+            display: flex;
+
+            justify-content: center;
+
+            gap: 15px;
+
+            flex-wrap: wrap;
+
+            margin:
+                25px 0 30px;
+        }
+
+
+        .download-btn {
+
+            display: inline-block;
+
+            padding:
+                15px 30px;
+
+            border-radius: 11px;
+
+            background: #e94f88;
+
+            color: white;
+
+            text-decoration: none;
+
+            font-size: 17px;
+
+            font-weight: 700;
+
+            transition: 0.2s;
+        }
+
+
+        .download-btn:hover {
+
+            background: #d83d76;
+        }
+
+
+        .report-actions .secondary-btn {
+
+            padding:
+                15px 30px;
+
+            font-size: 17px;
+        }
+
+
+        /* =====================================
+           RECOMMENDATIONS
+        ===================================== */
+
+        .recommendations {
+
+            background: #f8fafc;
+
+            padding: 25px;
+
+            border-radius: 15px;
+
+            margin-top: 30px;
+        }
+
+
+        .recommendations h3 {
+
+            color: #172554;
+
+            margin:
+                0 0 18px;
+
+            font-size: 22px;
+        }
+
+
+        .recommendations ul {
+
+            padding-left: 22px;
+
+            margin: 0;
+        }
+
+
+        .recommendations li {
+
+            margin-bottom: 10px;
+
+            color: #475569;
+
+            line-height: 1.6;
+
+            font-size: 17px;
+        }
+
+
+        /* =====================================
+           DISCLAIMER
+        ===================================== */
+
+        .disclaimer {
+
+            background: #fff7ed;
+
+            border:
+                1px solid #fed7aa;
+
+            color: #9a3412;
+
+            padding: 15px;
+
+            border-radius: 10px;
+
+            margin-top: 20px;
+
+            line-height: 1.5;
+
+            font-size: 14px;
+        }
+
+
+        /* =====================================
+           MOBILE
+        ===================================== */
+
+        @media (max-width: 750px) {
+
+            .page-wrapper {
+
+                padding: 15px;
+            }
+
+
+            .form-grid {
+
+                grid-template-columns:
+                    1fr;
+            }
+
+
+            .result-info {
+
+                grid-template-columns:
+                    1fr;
+            }
+
+
+            .form-card,
+            .result-card {
+
+                padding: 20px;
+            }
+
+
+            .header-card h1 {
+
+                font-size: 24px;
+            }
+
+
+            .result-heading h2 {
+
+                font-size: 25px;
+            }
+
+
+            .result-subtitle {
+
+                font-size: 15px;
+            }
+
+
+            .score {
+
+                font-size: 46px;
+            }
+
+
+            .meaning-box p {
+
+                font-size: 15px;
+            }
+
+
+            .info-box span {
+
+                font-size: 23px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="page-wrapper">
+
+    <div class="container">
+
+
+        <!-- =====================================
+             HEADER
+        ====================================== -->
+
+        <div class="header-card">
+
+            <h1>
+                Basic Heart Health Screening
+            </h1>
+
+            <p>
+                Welcome, {{ user_name }}.
+                Enter general health and lifestyle
+                information for a preliminary
+                screening assessment.
+            </p>
+
+        </div>
+
+
+        <!-- =====================================
+             MESSAGE
+        ====================================== -->
+
+        <div
+            id="messageBox"
+            class="message-box"
+        ></div>
+
+
+        <!-- =====================================
+             FORM
+        ====================================== -->
+
+        <div class="form-card">
+
+            <div class="section-title">
+                Personal Information
+            </div>
+
+
+            <form id="basicScreeningForm">
+
+
+                <div class="form-grid">
+
+
+                    <!-- AGE -->
+
+                    <div class="form-group">
+
+                        <label for="age">
+                            Age
+                        </label>
+
+                        <input
+                            type="number"
+                            id="age"
+                            min="18"
+                            max="120"
+                            required
+                            placeholder="Enter your age"
+                        >
+
+                        <div class="form-help">
+                            Age must be between 18 and 120.
+                        </div>
+
+                    </div>
+
+
+                    <!-- GENDER -->
+
+                    <div class="form-group">
+
+                        <label for="gender">
+                            Gender
+                        </label>
+
+                        <select
+                            id="gender"
+                            required
+                        >
+
+                            <option value="">
+                                Select gender
+                            </option>
+
+                            <option value="0">
+                                Male
+                            </option>
+
+                            <option value="1">
+                                Female
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- HEIGHT -->
+
+                    <div class="form-group">
+
+                        <label for="height">
+                            Height (cm)
+                        </label>
+
+                        <input
+                            type="number"
+                            id="height"
+                            min="100"
+                            max="250"
+                            step="0.1"
+                            required
+                            placeholder="Example: 165"
+                        >
+
+                    </div>
+
+
+                    <!-- WEIGHT -->
+
+                    <div class="form-group">
+
+                        <label for="weight">
+                            Weight (kg)
+                        </label>
+
+                        <input
+                            type="number"
+                            id="weight"
+                            min="20"
+                            max="300"
+                            step="0.1"
+                            required
+                            placeholder="Example: 60"
+                        >
+
+                    </div>
+
+
+                    <!-- BMI -->
+
+                    <div class="form-group">
+
+                        <label>
+                            Body Mass Index (BMI)
+                        </label>
+
+                        <div
+                            id="bmiDisplay"
+                            class="bmi-box"
+                        >
+                            Enter height and weight
+                        </div>
+
+                        <div class="form-help">
+                            BMI is calculated automatically.
+                        </div>
+
+                    </div>
+
+
+                    <!-- SMOKING -->
+
+                    <div class="form-group">
+
+                        <label for="smoking">
+                            Do you currently smoke or use tobacco?
+                        </label>
+
+                        <select
+                            id="smoking"
+                            required
+                        >
+
+                            <option value="">
+                                Select
+                            </option>
+
+                            <option value="1">
+                                Yes
+                            </option>
+
+                            <option value="0">
+                                No
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- PHYSICAL ACTIVITY -->
+
+                    <div class="form-group">
+
+                        <label for="activity">
+                            Do you regularly engage in physical activity?
+                        </label>
+
+                        <select
+                            id="activity"
+                            required
+                        >
+
+                            <option value="">
+                                Select
+                            </option>
+
+                            <option value="0">
+                                Yes
+                            </option>
+
+                            <option value="1">
+                                No
+                            </option>
+
+                        </select>
+
+                        <div class="form-help">
+                            The model records 1 when physical inactivity is present.
+                        </div>
+
+                    </div>
+
+
+                    <!-- BLOOD PRESSURE -->
+
+                    <div class="form-group">
+
+                        <label for="bloodPressure">
+                            Have you been told that you have high blood pressure?
+                        </label>
+
+                        <select
+                            id="bloodPressure"
+                            required
+                        >
+
+                            <option value="">
+                                Select
+                            </option>
+
+                            <option value="1">
+                                Yes
+                            </option>
+
+                            <option value="0">
+                                No
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- DIABETES -->
+
+                    <div class="form-group">
+
+                        <label for="diabetes">
+                            Diabetes status
+                        </label>
+
+                        <select
+                            id="diabetes"
+                            required
+                        >
+
+                            <option value="">
+                                Select
+                            </option>
+
+                            <option value="1">
+                                Diabetes
+                            </option>
+
+                            <option value="4">
+                                Prediabetes
+                            </option>
+
+                            <option value="3">
+                                No diabetes
+                            </option>
+
+                            <option value="2">
+                                Pregnancy-related diabetes
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- GENERAL HEALTH -->
+
+                    <div class="form-group">
+
+                        <label for="generalHealth">
+                            General health
+                        </label>
+
+                        <select
+                            id="generalHealth"
+                            required
+                        >
+
+                            <option value="">
+                                Select
+                            </option>
+
+                            <option value="1">
+                                Excellent
+                            </option>
+
+                            <option value="2">
+                                Very Good
+                            </option>
+
+                            <option value="3">
+                                Good
+                            </option>
+
+                            <option value="4">
+                                Fair
+                            </option>
+
+                            <option value="5">
+                                Poor
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- SLEEP -->
+
+                    <div class="form-group">
+
+                        <label for="sleep">
+                            Average sleep per day (hours)
+                        </label>
+
+                        <input
+                            type="number"
+                            id="sleep"
+                            min="1"
+                            max="24"
+                            step="1"
+                            required
+                            placeholder="Example: 7"
+                        >
+
+                    </div>
+
+
+                    <!-- ALCOHOL -->
+
+                    <div class="form-group">
+
+                        <label for="alcohol">
+                            Do you currently consume alcohol?
+                        </label>
+
+                        <select
+                            id="alcohol"
+                            required
+                        >
+
+                            <option value="">
+                                Select
+                            </option>
+
+                            <option value="1">
+                                Yes
+                            </option>
+
+                            <option value="0">
+                                No
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- PREVIOUS STROKE -->
+
+                    <div class="form-group">
+
+                        <label for="stroke">
+                            Have you previously had a stroke?
+                        </label>
+
+                        <select
+                            id="stroke"
+                            required
+                        >
+
+                            <option value="">
+                                Select
+                            </option>
+
+                            <option value="1">
+                                Yes
+                            </option>
+
+                            <option value="0">
+                                No
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                </div>
+
+
+                <!-- BUTTONS -->
+
+                <div class="button-row">
+
+                    <button
+                        type="submit"
+                        class="primary-btn"
+                    >
+                        Get Screening Result
+                    </button>
+
+
+                    <a
+                        href="/dashboard"
+                        class="secondary-btn"
+                    >
+                        Back to Dashboard
+                    </a>
+
+                </div>
+
+
+                <div
+                    id="loading"
+                    class="loading"
+                >
+                    Processing your screening result...
+                </div>
+
+
+            </form>
+
+        </div>
+
+
+        <!-- =====================================
+             RESULT CARD
+        ====================================== -->
+
+        <div
+            id="resultCard"
+            class="result-card"
+        >
+
+
+            <div class="result-heading">
+
+                <h2>
+                    Basic Screening Result
+                </h2>
+
+
+                <div class="result-subtitle">
+                    Preliminary heart health screening based on your general health and lifestyle information
+                </div>
+
+
+                <div class="score-label">
+                    Screening Score
+                </div>
+
+
+                <div
+                    id="resultScore"
+                    class="score"
+                >
+                    --
+                </div>
+
+
+                <div
+                    id="resultLabel"
+                    class="risk-badge"
+                >
+                    --
+                </div>
+
+            </div>
+
+
+            <!-- RESULT INFORMATION -->
+
+            <div class="result-info">
+
+
+                <div class="info-box">
+
+                    <strong>
+                        Screening Score
+                    </strong>
+
+                    <span id="scoreValue">
+                        --
+                    </span>
+
+                </div>
+
+
+                <div class="info-box">
+
+                    <strong>
+                        Risk Category
+                    </strong>
+
+                    <span id="riskCategory">
+                        --
+                    </span>
+
+                </div>
+
+
+            </div>
+
+
+            <!-- WHAT THIS MEANS -->
+
+            <div class="meaning-box">
+
+                <h3>
+                    What this means
+                </h3>
+
+                <p id="meaningText">
+                    --
+                </p>
+
+            </div>
+
+
+            <!-- REPORT BUTTONS -->
+
+            <div class="report-actions">
+
+                <a
+                    id="downloadReportButton"
+                    class="download-btn"
+                    href="#"
+                    target="_blank"
+                    style="display: none;"
+                >
+                    Download PDF Report
+                </a>
+
+
+                <a
+                    href="/dashboard"
+                    class="secondary-btn"
+                >
+                    Back to Dashboard
+                </a>
+
+            </div>
+
+
+            <!-- RECOMMENDATIONS -->
+
+            <div class="recommendations">
+
+                <h3>
+                    Personalized Recommendations
+                </h3>
+
+
+                <ul id="recommendationList"></ul>
+
+            </div>
+
+
+            <!-- DISCLAIMER -->
+
+            <div class="disclaimer">
+
+                This is a preliminary screening result
+                based on the information provided.
+                It is not a medical diagnosis.
+                For medical concerns, consult a qualified
+                healthcare professional.
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+</div>
+
+
+<script>
+
+
+    // ==========================================
+    // ELEMENTS
+    // ==========================================
+
+    const form =
+        document.getElementById(
+            "basicScreeningForm"
+        );
+
+
+    const ageInput =
+        document.getElementById(
+            "age"
+        );
+
+
+    const heightInput =
+        document.getElementById(
+            "height"
+        );
+
+
+    const weightInput =
+        document.getElementById(
+            "weight"
+        );
+
+
+    const bmiDisplay =
+        document.getElementById(
+            "bmiDisplay"
+        );
+
+
+    const resultCard =
+        document.getElementById(
+            "resultCard"
+        );
+
+
+    const resultScore =
+        document.getElementById(
+            "resultScore"
+        );
+
+
+    const scoreValue =
+        document.getElementById(
+            "scoreValue"
+        );
+
+
+    const resultLabel =
+        document.getElementById(
+            "resultLabel"
+        );
+
+
+    const riskCategory =
+        document.getElementById(
+            "riskCategory"
+        );
+
+
+    const meaningText =
+        document.getElementById(
+            "meaningText"
+        );
+
+
+    const recommendationList =
+        document.getElementById(
+            "recommendationList"
+        );
+
+
+    const downloadReportButton =
+        document.getElementById(
+            "downloadReportButton"
+        );
+
+
+    const loading =
+        document.getElementById(
+            "loading"
+        );
+
+
+    const messageBox =
+        document.getElementById(
+            "messageBox"
+        );
+
+
+    // ==========================================
+    // SHOW MESSAGE
+    // ==========================================
+
+    function showMessage(
+        message,
+        type = "error"
+    ) {
+
+        messageBox.textContent =
+            message;
+
+
+        messageBox.className =
+            "message-box";
+
+
+        if (
+            type === "success"
+        ) {
+
+            messageBox.classList.add(
+                "success-message"
+            );
+
+        } else {
+
+            messageBox.classList.add(
+                "error-message"
+            );
+
+        }
+
+
+        messageBox.style.display =
+            "block";
+    }
+
+
+    // ==========================================
+    // HIDE MESSAGE
+    // ==========================================
+
+    function hideMessage() {
+
+        messageBox.style.display =
+            "none";
+
+
+        messageBox.textContent =
+            "";
+    }
+
+
+    // ==========================================
+    // CALCULATE BMI
+    // ==========================================
+
+    function calculateBMI() {
+
+        const height =
+            parseFloat(
+                heightInput.value
+            );
+
+
+        const weight =
+            parseFloat(
+                weightInput.value
+            );
+
+
+        if (
+            !Number.isNaN(height) &&
+            !Number.isNaN(weight) &&
+            height > 0 &&
+            weight > 0
+        ) {
+
+            const heightMeters =
+                height / 100;
+
+
+            const bmi =
+                weight /
+                (
+                    heightMeters *
+                    heightMeters
+                );
+
+
+            bmiDisplay.textContent =
+                `BMI: ${bmi.toFixed(2)}`;
+
+
+            return Number(
+                bmi.toFixed(2)
+            );
+
+        }
+
+
+        bmiDisplay.textContent =
+            "Enter height and weight";
+
+
+        return null;
+    }
+
+
+    // ==========================================
+    // BMI EVENTS
+    // ==========================================
+
+    heightInput.addEventListener(
+        "input",
+        calculateBMI
+    );
+
+
+    weightInput.addEventListener(
+        "input",
+        calculateBMI
+    );
+
+
+    // ==========================================
+    // AGE GROUP
+    // ==========================================
+
+    function getAgeGroup(age) {
+
+        if (
+            age >= 18 &&
+            age <= 24
+        ) {
+            return 1;
+        }
+
+
+        if (
+            age >= 25 &&
+            age <= 29
+        ) {
+            return 2;
+        }
+
+
+        if (
+            age >= 30 &&
+            age <= 34
+        ) {
+            return 3;
+        }
+
+
+        if (
+            age >= 35 &&
+            age <= 39
+        ) {
+            return 4;
+        }
+
+
+        if (
+            age >= 40 &&
+            age <= 44
+        ) {
+            return 5;
+        }
+
+
+        if (
+            age >= 45 &&
+            age <= 49
+        ) {
+            return 6;
+        }
+
+
+        if (
+            age >= 50 &&
+            age <= 54
+        ) {
+            return 7;
+        }
+
+
+        if (
+            age >= 55 &&
+            age <= 59
+        ) {
+            return 8;
+        }
+
+
+        if (
+            age >= 60 &&
+            age <= 64
+        ) {
+            return 9;
+        }
+
+
+        if (
+            age >= 65 &&
+            age <= 69
+        ) {
+            return 10;
+        }
+
+
+        if (
+            age >= 70 &&
+            age <= 74
+        ) {
+            return 11;
+        }
+
+
+        if (
+            age >= 75 &&
+            age <= 79
+        ) {
+            return 12;
+        }
+
+
+        if (
+            age >= 80 &&
+            age <= 120
+        ) {
+            return 13;
+        }
+
+
+        return null;
+    }
+
+
+    // ==========================================
+    // NORMALIZE RISK CATEGORY
+    // ==========================================
+
+    function normalizeRiskCategory(
+        screeningResult
+    ) {
+
+        const level =
+            String(
+                screeningResult || ""
+            )
+            .toLowerCase()
+            .trim();
+
+
+        /*
+         * The Basic Screening backend may return:
+         *
+         * "Lower screening signal"
+         *
+         * We display only:
+         *
+         * "Lower"
+         */
+
+
+        if (
+            level.includes("moderate") ||
+            level.includes("medium")
+        ) {
+
+            return "Moderate";
+        }
+
+
+        if (
+            level.includes("high")
+        ) {
+
+            return "High";
+        }
+
+
+        if (
+            level.includes("lower") ||
+            level === "low" ||
+            level.includes(" low")
+        ) {
+
+            return "Lower";
+        }
+
+
+        return screeningResult || "--";
+    }
+
+
+    // ==========================================
+    // INTERPRETATION
+    // ==========================================
+
+    function getInterpretation(
+        screeningResult
+    ) {
+
+        const level =
+            String(
+                screeningResult || ""
+            )
+            .toLowerCase()
+            .trim();
+
+
+        if (
+            level === "lower"
+        ) {
+
+            return "The screening indicates a lower level of estimated heart disease risk based on the information provided.";
+
+        }
+
+
+        if (
+            level === "moderate"
+        ) {
+
+            return "The screening indicates a moderate level of estimated heart disease risk based on the information provided.";
+
+        }
+
+
+        if (
+            level === "high"
+        ) {
+
+            return "The screening indicates a high level of estimated heart disease risk based on the information provided.";
+
+        }
+
+
+        return "The screening result is based on the information provided.";
+    }
+
+
+    // ==========================================
+    // FORM SUBMIT
+    // ==========================================
+
+    form.addEventListener(
+        "submit",
+        async function(event) {
+
+            event.preventDefault();
+
+
+            hideMessage();
+
+
+            resultCard.style.display =
+                "none";
+
+
+            loading.style.display =
+                "block";
+
+
+            try {
+
+
+                // =================================
+                // READ VALUES
+                // =================================
+
+                const age =
+                    parseInt(
+                        ageInput.value
+                    );
+
+
+                const height =
+                    parseFloat(
+                        heightInput.value
+                    );
+
+
+                const weight =
+                    parseFloat(
+                        weightInput.value
+                    );
+
+
+                const gender =
+                    document.getElementById(
+                        "gender"
+                    ).value;
+
+
+                const smoking =
+                    document.getElementById(
+                        "smoking"
+                    ).value;
+
+
+                const activity =
+                    document.getElementById(
+                        "activity"
+                    ).value;
+
+
+                const bloodPressure =
+                    document.getElementById(
+                        "bloodPressure"
+                    ).value;
+
+
+                const diabetes =
+                    document.getElementById(
+                        "diabetes"
+                    ).value;
+
+
+                const generalHealth =
+                    document.getElementById(
+                        "generalHealth"
+                    ).value;
+
+
+                const sleep =
+                    document.getElementById(
+                        "sleep"
+                    ).value;
+
+
+                const alcohol =
+                    document.getElementById(
+                        "alcohol"
+                    ).value;
+
+
+                const stroke =
+                    document.getElementById(
+                        "stroke"
+                    ).value;
+
+
+                // =================================
+                // VALIDATION
+                // =================================
+
+                if (
+                    Number.isNaN(age) ||
+                    age < 18 ||
+                    age > 120
+                ) {
+
+                    throw new Error(
+                        "Please enter a valid age between 18 and 120."
+                    );
+                }
+
+
+                if (
+                    Number.isNaN(height) ||
+                    height < 100 ||
+                    height > 250
+                ) {
+
+                    throw new Error(
+                        "Please enter a valid height between 100 cm and 250 cm."
+                    );
+                }
+
+
+                if (
+                    Number.isNaN(weight) ||
+                    weight < 20 ||
+                    weight > 300
+                ) {
+
+                    throw new Error(
+                        "Please enter a valid weight between 20 kg and 300 kg."
+                    );
+                }
+
+
+                const bmi =
+                    calculateBMI();
+
+
+                if (
+                    bmi === null
+                ) {
+
+                    throw new Error(
+                        "BMI could not be calculated."
+                    );
+                }
+
+
+                const ageGroup =
+                    getAgeGroup(
+                        age
+                    );
+
+
+                if (
+                    ageGroup === null
+                ) {
+
+                    throw new Error(
+                        "Unable to determine age group."
+                    );
+                }
+
+
+                // =================================
+                // DATA SENT TO FLASK
+                // =================================
+
+                const data = {
+
+                    age:
+                        age,
+
+                    height_cm:
+                        height,
+
+                    weight_kg:
+                        weight,
+
+                    age_group:
+                        ageGroup,
+
+                    sex:
+                        parseInt(
+                            gender
+                        ),
+
+                    bmi:
+                        bmi,
+
+                    smoking:
+                        parseInt(
+                            smoking
+                        ),
+
+                    physical_inactivity:
+                        parseInt(
+                            activity
+                        ),
+
+                    high_blood_pressure:
+                        parseInt(
+                            bloodPressure
+                        ),
+
+                    diabetes_status:
+                        parseInt(
+                            diabetes
+                        ),
+
+                    general_health:
+                        parseInt(
+                            generalHealth
+                        ),
+
+                    sleep_hours:
+                        parseInt(
+                            sleep
+                        ),
+
+                    alcohol_use:
+                        parseInt(
+                            alcohol
+                        ),
+
+                    previous_stroke:
+                        parseInt(
+                            stroke
+                        )
+
+                };
+
+
+                // =================================
+                // SEND REQUEST
+                // =================================
+
+                const response =
+                    await fetch(
+                        "/api/basic-predict",
+                        {
+
+                            method:
+                                "POST",
+
+                            headers: {
+
+                                "Content-Type":
+                                    "application/json"
+
+                            },
+
+                            body:
+                                JSON.stringify(
+                                    data
+                                )
+
+                        }
+                    );
+
+
+                const result =
+                    await response.json();
+
+
+                // =================================
+                // HANDLE ERROR
+                // =================================
+
+                if (
+                    !response.ok
+                ) {
+
+                    throw new Error(
+                        result.message ||
+                        "Unable to process screening."
+                    );
+                }
+
+
+                // =================================
+                // GET SCORE
+                // =================================
+
+                const screeningScore =
+                    Number(
+                        result.screening_score
+                    );
+
+
+                if (
+                    !Number.isFinite(
+                        screeningScore
+                    )
+                ) {
+
+                    throw new Error(
+                        "Invalid screening score received from the server."
+                    );
+                }
+
+
+                // =================================
+                // ORIGINAL MODEL RESULT
+                // =================================
+
+                const screeningResult =
+                    result.screening_result ||
+                    "--";
+
+
+                // =================================
+                // NORMALIZED CATEGORY
+                // =================================
+
+                const riskCategoryValue =
+                    normalizeRiskCategory(
+                        screeningResult
+                    );
+
+
+                // =================================
+                // FORMAT SCORE
+                // =================================
+
+                const formattedScore =
+                    screeningScore.toFixed(2);
+
+
+                // =================================
+                // DISPLAY SCORE
+                // =================================
+
+                resultScore.textContent =
+                    formattedScore;
+
+
+                scoreValue.textContent =
+                    formattedScore;
+
+
+                // =================================
+                // DISPLAY RISK CATEGORY
+                // =================================
+
+                resultLabel.textContent =
+                    riskCategoryValue;
+
+
+                riskCategory.textContent =
+                    riskCategoryValue;
+
+
+                // =================================
+                // DISPLAY MEANING
+                // =================================
+
+                meaningText.textContent =
+                    getInterpretation(
+                        riskCategoryValue
+                    );
+
+
+                // =================================
+                // PDF REPORT
+                // =================================
+
+                if (
+                    result.assessment_id
+                ) {
+
+                    downloadReportButton.href =
+                        `/api/report/${result.assessment_id}`;
+
+
+                    downloadReportButton.style.display =
+                        "inline-block";
+
+                } else {
+
+                    downloadReportButton.style.display =
+                        "none";
+                }
+
+
+                // =================================
+                // RECOMMENDATIONS
+                // =================================
+
+                recommendationList.innerHTML =
+                    "";
+
+
+                if (
+                    result.recommendations &&
+                    result.recommendations.length > 0
+                ) {
+
+                    result.recommendations.forEach(
+                        function(recommendation) {
+
+                            const li =
+                                document.createElement(
+                                    "li"
+                                );
+
+
+                            li.textContent =
+                                recommendation;
+
+
+                            recommendationList.appendChild(
+                                li
+                            );
+
+                        }
+                    );
+
+                } else {
+
+                    const li =
+                        document.createElement(
+                            "li"
+                        );
+
+
+                    li.textContent =
+                        "Maintain healthy lifestyle habits and regular health follow-up.";
+
+
+                    recommendationList.appendChild(
+                        li
+                    );
+                }
+
+
+                // =================================
+                // SHOW RESULT
+                // =================================
+
+                resultCard.style.display =
+                    "block";
+
+
+                resultCard.scrollIntoView({
+
+                    behavior:
+                        "smooth"
+
+                });
+
+
+            } catch (error) {
+
+
+                console.error(
+                    "Basic screening error:",
+                    error
+                );
+
+
+                showMessage(
+                    error.message ||
+                    "Something went wrong. Please try again."
+                );
+
+
+            } finally {
+
+                loading.style.display =
+                    "none";
+            }
+
+        }
+    );
+
+</script>
+
+
+</body>
+
+</html>

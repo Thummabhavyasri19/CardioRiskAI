@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Register | CardioRiskAI</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/auth.css') }}">
+
+</head>
+
+
+<body>
+
+    <div class="heart heart-1">♥</div>
+    <div class="heart heart-2">♥</div>
+    <div class="heart heart-3">♥</div>
+    <div class="heart heart-4">♥</div>
+    <div class="heart heart-5">♥</div>
+
+
+    <main class="auth-page">
+
+        <section class="auth-card">
+
+            <div class="heart-icon">
+                ♥
+            </div>
+
+            <h1 class="project-title">
+                Enhancing Cardio Vascular Health-Through Machine Learning
+            </h1>
+
+            <p class="project-subtitle">
+                Create your account to access screening,
+                recommendations and personal screening history.
+            </p>
+
+
+            <form id="registerForm">
+
+                <div class="form-group">
+
+                    <label for="name">
+                        Full Name
+                    </label>
+
+                    <input
+                        type="text"
+                        id="name"
+                        placeholder="Enter your full name"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="email">
+                        Email Address
+                    </label>
+
+                    <input
+                        type="email"
+                        id="email"
+                        placeholder="Enter your email"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="password">
+                        Password
+                    </label>
+
+                    <input
+                        type="password"
+                        id="password"
+                        placeholder="Minimum 8 characters"
+                        minlength="8"
+                        required
+                    >
+
+                </div>
+
+
+                <button
+                    type="submit"
+                    class="primary-btn">
+
+                    Create Account
+
+                </button>
+
+            </form>
+
+
+            <div
+                id="message"
+                class="message">
+            </div>
+
+
+            <div class="auth-link">
+
+                Already have an account?
+
+                <a href="/login">
+                    Login
+                </a>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <script>
+
+        const registerForm =
+            document.getElementById("registerForm");
+
+        const message =
+            document.getElementById("message");
+
+
+        registerForm.addEventListener(
+            "submit",
+            async function(event) {
+
+                event.preventDefault();
+
+                message.textContent = "";
+                message.className = "message";
+
+
+                const name =
+                    document.getElementById("name").value;
+
+                const email =
+                    document.getElementById("email").value;
+
+                const password =
+                    document.getElementById("password").value;
+
+
+                try {
+
+                    const response =
+                        await fetch("/api/register", {
+
+                            method: "POST",
+
+                            headers: {
+                                "Content-Type": "application/json"
+                            },
+
+                            body: JSON.stringify({
+                                name: name,
+                                email: email,
+                                password: password
+                            })
+
+                        });
+
+
+                    const result =
+                        await response.json();
+
+
+                    if (response.ok) {
+
+                        message.textContent =
+                            "Account created successfully. Redirecting...";
+
+                        message.classList.add(
+                            "success-message"
+                        );
+
+
+                        setTimeout(function() {
+
+                            window.location.href =
+                                "/login";
+
+                        }, 900);
+
+                    } else {
+
+                        message.textContent =
+                            result.message ||
+                            "Registration failed.";
+
+                        message.classList.add(
+                            "error-message"
+                        );
+
+                    }
+
+                } catch (error) {
+
+                    message.textContent =
+                        "Unable to connect to the server.";
+
+                    message.classList.add(
+                        "error-message"
+                    );
+
+                }
+
+            }
+        );
+
+    </script>
+
+</body>
+
+</html>

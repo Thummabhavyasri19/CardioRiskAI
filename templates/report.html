@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>CardioRiskAI - Screening Report</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 30px;
+            background: white;
+            color: #222;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        .report-container {
+            max-width: 850px;
+            margin: auto;
+            background: white;
+            padding: 35px;
+        }
+
+        .header {
+            text-align: center;
+            border-bottom: 2px solid #222;
+            padding-bottom: 20px;
+            margin-bottom: 25px;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 30px;
+        }
+
+        .header p {
+            margin-top: 8px;
+            color: #555;
+            font-size: 15px;
+        }
+
+        .section {
+            margin-top: 25px;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 12px;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 7px;
+        }
+
+        .patient-info {
+            margin-bottom: 20px;
+            line-height: 1.7;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        th,
+        td {
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background: #f2f2f2;
+            font-weight: bold;
+        }
+
+        .risk-box {
+            border: 2px solid #333;
+            padding: 20px;
+            margin-top: 15px;
+            text-align: center;
+        }
+
+        .risk-score {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .risk-category {
+            font-size: 21px;
+            font-weight: bold;
+        }
+
+        .recommendations {
+            padding-left: 25px;
+        }
+
+        .recommendations li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+
+        .disclaimer {
+            margin-top: 30px;
+            padding: 15px;
+            border: 1px solid #bbb;
+            background: #f7f7f7;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .buttons {
+            max-width: 850px;
+            margin: 0 auto 20px auto;
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        button {
+            border: none;
+            padding: 12px 22px;
+            font-size: 15px;
+            cursor: pointer;
+            border-radius: 6px;
+        }
+
+        .print-btn {
+            background: #222;
+            color: white;
+        }
+
+        .back-btn {
+            background: #ddd;
+            color: #222;
+        }
+
+        @media print {
+
+            body {
+                padding: 0;
+                background: white;
+            }
+
+            .report-container {
+                max-width: none;
+                padding: 0;
+            }
+
+            .buttons {
+                display: none;
+            }
+
+            .section {
+                break-inside: avoid;
+            }
+
+            .risk-box {
+                break-inside: avoid;
+            }
+
+            .disclaimer {
+                break-inside: avoid;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- BUTTONS -->
+
+    <div class="buttons">
+
+        <button
+            class="print-btn"
+            onclick="window.print()"
+        >
+            Print Report
+        </button>
+
+        <button
+            class="back-btn"
+            onclick="window.history.back()"
+        >
+            Back
+        </button>
+
+    </div>
+
+
+    <!-- REPORT -->
+
+    <div class="report-container">
+
+
+        <!-- HEADER -->
+
+        <div class="header">
+
+            <h1>
+                CardioRiskAI
+            </h1>
+
+            <p>
+                Cardiovascular Risk Screening Report
+            </p>
+
+        </div>
+
+
+        <!-- BASIC INFORMATION -->
+
+        <div class="patient-info">
+
+            <strong>
+                Screening Type:
+            </strong>
+
+            {{ report.assessment_type }}
+
+            <br>
+
+            <strong>
+                Date:
+            </strong>
+
+            {{ report.created_at }}
+
+        </div>
+
+
+        <!-- ENTERED READINGS -->
+
+        <div class="section">
+
+            <div class="section-title">
+                Entered Readings
+            </div>
+
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            Reading
+                        </th>
+
+                        <th>
+                            Entered Value
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    {% for key, value in report.inputs.items() %}
+
+                    <tr>
+
+                        <td>
+                            {{ key|replace("_", " ")|title }}
+                        </td>
+
+                        <td>
+                            {{ value }}
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+
+        <!-- RISK RESULT -->
+
+        <div class="section">
+
+            <div class="section-title">
+                Screening Result
+            </div>
+
+
+            <div class="risk-box">
+
+                <div class="risk-score">
+
+                    Risk Score:
+                    {{ "%.2f"|format(report.risk_score) }}
+
+                </div>
+
+
+                <div class="risk-category">
+
+                    Risk Category:
+                    {{ report.risk_category }}
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- RECOMMENDATIONS -->
+
+        <div class="section">
+
+            <div class="section-title">
+                Personalized Recommendations
+            </div>
+
+
+            <ol class="recommendations">
+
+                {% for recommendation in report.recommendations %}
+
+                <li>
+                    {{ recommendation }}
+                </li>
+
+                {% endfor %}
+
+            </ol>
+
+        </div>
+
+
+        <!-- DISCLAIMER -->
+
+        <div class="disclaimer">
+
+            <strong>
+                Disclaimer:
+            </strong>
+
+            This is a preliminary screening result based on
+            the information provided. It is not a medical
+            diagnosis. For medical concerns, consult a
+            qualified healthcare professional.
+
+        </div>
+
+
+    </div>
+
+
+</body>
+
+</html>

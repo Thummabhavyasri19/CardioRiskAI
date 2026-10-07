@@ -1,0 +1,5 @@
+.env
+venv/
+__pycache__/
+*.pyc
+datasets/raw/brfss_2025/LLCP2025.XPT

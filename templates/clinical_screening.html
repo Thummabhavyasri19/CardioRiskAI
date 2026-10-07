@@ -1,0 +1,1689 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Clinical Screening - CardioRiskAI
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/screening.css') }}"
+    >
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+            background: #f6f8fc;
+            color: #1e293b;
+        }
+
+        .page-wrapper {
+            min-height: 100vh;
+            background: #f6f8fc;
+            padding: 30px;
+        }
+
+        .container {
+            max-width: 1050px;
+            margin: auto;
+        }
+
+        /* =====================================
+           HEADER
+        ===================================== */
+
+        .header-card {
+            background:
+                linear-gradient(
+                    135deg,
+                    #101c3d,
+                    #243b7a
+                );
+
+            color: white;
+
+            padding: 30px;
+
+            border-radius: 18px;
+
+            margin-bottom: 25px;
+        }
+
+        .header-card h1 {
+            margin: 0 0 8px;
+
+            font-size: 30px;
+        }
+
+        .header-card p {
+            margin: 0;
+
+            opacity: 0.9;
+
+            line-height: 1.6;
+        }
+
+        /* =====================================
+           COMMON CARDS
+        ===================================== */
+
+        .form-card,
+        .result-card {
+
+            background: white;
+
+            padding: 30px;
+
+            border-radius: 18px;
+
+            box-shadow:
+                0 8px 25px
+                rgba(0, 0, 0, 0.06);
+
+            margin-bottom: 25px;
+        }
+
+        .section-title {
+
+            font-size: 20px;
+
+            font-weight: 700;
+
+            color: #172554;
+
+            margin-bottom: 20px;
+        }
+
+        /* =====================================
+           FORM
+        ===================================== */
+
+        .form-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(2, 1fr);
+
+            gap: 20px;
+        }
+
+        .form-group {
+
+            display: flex;
+
+            flex-direction: column;
+        }
+
+        .form-group label {
+
+            font-weight: 600;
+
+            color: #334155;
+
+            margin-bottom: 8px;
+        }
+
+        .form-group input,
+        .form-group select {
+
+            width: 100%;
+
+            padding: 13px 14px;
+
+            border:
+                1px solid #d8dee9;
+
+            border-radius: 10px;
+
+            font-size: 15px;
+
+            outline: none;
+
+            background: white;
+
+            transition: 0.2s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+
+            border-color: #e94f88;
+
+            box-shadow:
+                0 0 0 3px
+                rgba(
+                    233,
+                    79,
+                    136,
+                    0.12
+                );
+        }
+
+        .help-text {
+
+            margin-top: 5px;
+
+            font-size: 12px;
+
+            color: #64748b;
+        }
+
+        /* =====================================
+           BUTTONS
+        ===================================== */
+
+        .button-row {
+
+            display: flex;
+
+            gap: 12px;
+
+            margin-top: 25px;
+
+            flex-wrap: wrap;
+        }
+
+        .primary-btn,
+        .secondary-btn {
+
+            padding: 13px 22px;
+
+            border-radius: 10px;
+
+            border: none;
+
+            font-size: 15px;
+
+            font-weight: 700;
+
+            cursor: pointer;
+
+            text-decoration: none;
+
+            display: inline-block;
+
+            transition: 0.2s;
+        }
+
+        .primary-btn {
+
+            background: #e94f88;
+
+            color: white;
+        }
+
+        .primary-btn:hover {
+
+            background: #d83d76;
+        }
+
+        .secondary-btn {
+
+            background: #e9edf5;
+
+            color: #1e293b;
+        }
+
+        .secondary-btn:hover {
+
+            background: #dfe5ef;
+        }
+
+        /* =====================================
+           MESSAGE
+        ===================================== */
+
+        .message {
+
+            display: none;
+
+            padding: 13px 15px;
+
+            border-radius: 10px;
+
+            margin-bottom: 20px;
+
+            font-weight: 600;
+        }
+
+        .error-message {
+
+            background: #fef2f2;
+
+            border:
+                1px solid #fecaca;
+
+            color: #b91c1c;
+        }
+
+        .success-message {
+
+            background: #f0fdf4;
+
+            border:
+                1px solid #bbf7d0;
+
+            color: #166534;
+        }
+
+        .loading {
+
+            display: none;
+
+            margin-top: 15px;
+
+            color: #64748b;
+
+            font-weight: 600;
+        }
+
+        /* =====================================
+           RESULT CARD
+        ===================================== */
+
+        .result-card {
+
+            display: none;
+        }
+
+        .result-heading {
+
+            text-align: center;
+
+            margin-bottom: 25px;
+        }
+
+        .result-heading h2 {
+
+            color: #172554;
+
+            margin:
+                0 0 8px;
+
+            font-size: 25px;
+        }
+
+        .result-subtitle {
+
+            color: #64748b;
+
+            font-size: 14px;
+
+            margin-top: 5px;
+        }
+
+        .score-label {
+
+            color: #475569;
+
+            font-size: 15px;
+
+            font-weight: 600;
+
+            margin-top: 18px;
+        }
+
+        .score {
+
+            font-size: 45px;
+
+            font-weight: 800;
+
+            color: #e94f88;
+
+            margin:
+                5px 0 12px;
+        }
+
+        .risk-badge {
+
+            display: inline-block;
+
+            padding:
+                8px 20px;
+
+            border-radius: 25px;
+
+            background: #fff1f6;
+
+            border:
+                1px solid #f5bfd1;
+
+            color: #be185d;
+
+            font-weight: 700;
+
+            text-transform: capitalize;
+        }
+
+        /* =====================================
+           RESULT INFORMATION
+        ===================================== */
+
+        .result-info {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(2, 1fr);
+
+            gap: 15px;
+
+            margin-bottom: 25px;
+        }
+
+        .info-box {
+
+            background: #f8fafc;
+
+            padding: 20px;
+
+            border-radius: 12px;
+
+            text-align: center;
+        }
+
+        .info-box strong {
+
+            display: block;
+
+            color: #475569;
+
+            margin-bottom: 9px;
+
+            font-size: 14px;
+        }
+
+        .info-box span {
+
+            color: #172554;
+
+            font-weight: 800;
+
+            font-size: 20px;
+        }
+
+        /* =====================================
+           MEANING
+        ===================================== */
+
+        .meaning-box {
+
+            background: #f8fafc;
+
+            padding: 20px;
+
+            border-radius: 12px;
+
+            margin-bottom: 20px;
+
+            text-align: center;
+        }
+
+        .meaning-box h3 {
+
+            color: #172554;
+
+            margin:
+                0 0 10px;
+        }
+
+        .meaning-box p {
+
+            color: #475569;
+
+            line-height: 1.6;
+
+            margin: 0;
+        }
+
+        /* =====================================
+           REPORT ACTIONS
+        ===================================== */
+
+        .report-actions {
+
+            display: flex;
+
+            justify-content: center;
+
+            gap: 12px;
+
+            flex-wrap: wrap;
+
+            margin: 25px 0;
+        }
+
+        .download-btn {
+
+            display: inline-block;
+
+            padding:
+                13px 24px;
+
+            border-radius: 10px;
+
+            background: #e94f88;
+
+            color: white;
+
+            text-decoration: none;
+
+            font-size: 15px;
+
+            font-weight: 700;
+
+            transition: 0.2s;
+        }
+
+        .download-btn:hover {
+
+            background: #d83d76;
+        }
+
+        /* =====================================
+           RECOMMENDATIONS
+        ===================================== */
+
+        .recommendations {
+
+            background: #f8fafc;
+
+            padding: 20px;
+
+            border-radius: 12px;
+        }
+
+        .recommendations h3 {
+
+            color: #172554;
+
+            margin-top: 0;
+        }
+
+        .recommendations ul {
+
+            padding-left: 20px;
+
+            margin-bottom: 0;
+        }
+
+        .recommendations li {
+
+            margin-bottom: 10px;
+
+            color: #475569;
+
+            line-height: 1.5;
+        }
+
+        /* =====================================
+           DISCLAIMER
+        ===================================== */
+
+        .disclaimer {
+
+            margin-top: 20px;
+
+            background: #fff7ed;
+
+            border:
+                1px solid #fed7aa;
+
+            color: #9a3412;
+
+            padding: 15px;
+
+            border-radius: 10px;
+
+            line-height: 1.5;
+
+            font-size: 14px;
+        }
+
+        /* =====================================
+           MOBILE
+        ===================================== */
+
+        @media (max-width: 750px) {
+
+            .page-wrapper {
+                padding: 15px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .result-info {
+                grid-template-columns: 1fr;
+            }
+
+            .form-card,
+            .result-card {
+                padding: 20px;
+            }
+
+            .header-card h1 {
+                font-size: 24px;
+            }
+
+            .score {
+                font-size: 38px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="page-wrapper">
+
+    <div class="container">
+
+
+        <!-- =====================================
+             HEADER
+        ====================================== -->
+
+        <div class="header-card">
+
+            <h1>
+                Clinical Screening
+            </h1>
+
+            <p>
+                Welcome, {{ user_name }}.
+                Enter the available clinical information
+                below for a preliminary screening assessment.
+            </p>
+
+        </div>
+
+
+        <!-- =====================================
+             MESSAGE
+        ====================================== -->
+
+        <div
+            id="message"
+            class="message"
+        ></div>
+
+
+        <!-- =====================================
+             FORM
+        ====================================== -->
+
+        <div class="form-card">
+
+            <div class="section-title">
+                Clinical Information
+            </div>
+
+
+            <form id="clinicalForm">
+
+
+                <div class="form-grid">
+
+
+                    <!-- AGE -->
+
+                    <div class="form-group">
+
+                        <label for="age">
+                            Age
+                        </label>
+
+                        <input
+                            type="number"
+                            id="age"
+                            min="18"
+                            max="120"
+                            required
+                        >
+
+                    </div>
+
+
+                    <!-- GENDER -->
+
+                    <div class="form-group">
+
+                        <label for="sex">
+                            Gender
+                        </label>
+
+                        <select
+                            id="sex"
+                            required
+                        >
+
+                            <option value="">
+                                Select Gender
+                            </option>
+
+                            <option value="1">
+                                Male
+                            </option>
+
+                            <option value="0">
+                                Female
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- CHEST PAIN -->
+
+                    <div class="form-group">
+
+                        <label for="cp">
+                            Chest Pain Type
+                        </label>
+
+                        <select
+                            id="cp"
+                            required
+                        >
+
+                            <option value="">
+                                Select
+                            </option>
+
+                            <option value="1">
+                                Typical Angina
+                            </option>
+
+                            <option value="2">
+                                Atypical Angina
+                            </option>
+
+                            <option value="3">
+                                Non-anginal Pain
+                            </option>
+
+                            <option value="4">
+                                Asymptomatic
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- BLOOD PRESSURE -->
+
+                    <div class="form-group">
+
+                        <label for="trestbps">
+                            Resting Blood Pressure
+                        </label>
+
+                        <input
+                            type="number"
+                            id="trestbps"
+                            min="50"
+                            max="250"
+                            required
+                            placeholder="Example: 130"
+                        >
+
+                        <div class="help-text">
+                            Enter systolic blood pressure in mmHg.
+                        </div>
+
+                    </div>
+
+
+                    <!-- CHOLESTEROL -->
+
+                    <div class="form-group">
+
+                        <label for="chol">
+                            Cholesterol
+                        </label>
+
+                        <input
+                            type="number"
+                            id="chol"
+                            min="50"
+                            max="600"
+                            required
+                            placeholder="Example: 220"
+                        >
+
+                        <div class="help-text">
+                            Enter total cholesterol in mg/dL.
+                        </div>
+
+                    </div>
+
+
+                    <!-- FASTING BLOOD SUGAR -->
+
+                    <div class="form-group">
+
+                        <label for="fbs">
+                            Fasting Blood Sugar &gt; 120 mg/dL
+                        </label>
+
+                        <select
+                            id="fbs"
+                            required
+                        >
+
+                            <option value="">
+                                Select
+                            </option>
+
+                            <option value="0">
+                                No
+                            </option>
+
+                            <option value="1">
+                                Yes
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- ECG -->
+
+                    <div class="form-group">
+
+                        <label for="restecg">
+                            Resting ECG
+                        </label>
+
+                        <select
+                            id="restecg"
+                            required
+                        >
+
+                            <option value="">
+                                Select
+                            </option>
+
+                            <option value="0">
+                                Normal
+                            </option>
+
+                            <option value="1">
+                                ST-T Wave Abnormality
+                            </option>
+
+                            <option value="2">
+                                LV Hypertrophy
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- MAX HEART RATE -->
+
+                    <div class="form-group">
+
+                        <label for="thalach">
+                            Maximum Heart Rate
+                        </label>
+
+                        <input
+                            type="number"
+                            id="thalach"
+                            min="50"
+                            max="250"
+                            required
+                            placeholder="Example: 165"
+                        >
+
+                    </div>
+
+
+                    <!-- EXERCISE ANGINA -->
+
+                    <div class="form-group">
+
+                        <label for="exang">
+                            Exercise-induced Angina
+                        </label>
+
+                        <select
+                            id="exang"
+                            required
+                        >
+
+                            <option value="">
+                                Select
+                            </option>
+
+                            <option value="0">
+                                No
+                            </option>
+
+                            <option value="1">
+                                Yes
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- OLDPEAK -->
+
+                    <div class="form-group">
+
+                        <label for="oldpeak">
+                            Oldpeak
+                        </label>
+
+                        <input
+                            type="number"
+                            id="oldpeak"
+                            min="0"
+                            max="10"
+                            step="0.1"
+                            required
+                            placeholder="Example: 1.0"
+                        >
+
+                    </div>
+
+
+                    <!-- SLOPE -->
+
+                    <div class="form-group">
+
+                        <label for="slope">
+                            ST Segment Slope
+                        </label>
+
+                        <select
+                            id="slope"
+                            required
+                        >
+
+                            <option value="">
+                                Select
+                            </option>
+
+                            <option value="1">
+                                Upsloping
+                            </option>
+
+                            <option value="2">
+                                Flat
+                            </option>
+
+                            <option value="3">
+                                Downsloping
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- MAJOR VESSELS -->
+
+                    <div class="form-group">
+
+                        <label for="ca">
+                            Major Vessels (0-3)
+                        </label>
+
+                        <select
+                            id="ca"
+                            required
+                        >
+
+                            <option value="">
+                                Select
+                            </option>
+
+                            <option value="0">
+                                0
+                            </option>
+
+                            <option value="1">
+                                1
+                            </option>
+
+                            <option value="2">
+                                2
+                            </option>
+
+                            <option value="3">
+                                3
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- THAL -->
+
+                    <div class="form-group">
+
+                        <label for="thal">
+                            Thal
+                        </label>
+
+                        <select
+                            id="thal"
+                            required
+                        >
+
+                            <option value="">
+                                Select
+                            </option>
+
+                            <option value="3">
+                                Normal
+                            </option>
+
+                            <option value="6">
+                                Fixed Defect
+                            </option>
+
+                            <option value="7">
+                                Reversible Defect
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                </div>
+
+
+                <!-- BUTTONS -->
+
+                <div class="button-row">
+
+                    <button
+                        type="submit"
+                        class="primary-btn"
+                    >
+                        Get Clinical Screening Result
+                    </button>
+
+
+                    <a
+                        href="/dashboard"
+                        class="secondary-btn"
+                    >
+                        Back to Dashboard
+                    </a>
+
+                </div>
+
+
+                <div
+                    id="loading"
+                    class="loading"
+                >
+                    Processing clinical screening...
+                </div>
+
+
+            </form>
+
+        </div>
+
+
+        <!-- =====================================
+             RESULT
+        ====================================== -->
+
+        <div
+            id="resultCard"
+            class="result-card"
+        >
+
+
+            <div class="result-heading">
+
+                <h2>
+                    Clinical Screening Result
+                </h2>
+
+                <div class="result-subtitle">
+                    Preliminary heart health screening based on the information provided
+                </div>
+
+                <div class="score-label">
+                    Model Screening Score
+                </div>
+
+                <div
+                    id="riskScore"
+                    class="score"
+                >
+                    --
+                </div>
+
+                <div
+                    id="riskBadge"
+                    class="risk-badge"
+                >
+                    --
+                </div>
+
+            </div>
+
+
+            <!-- RESULT INFORMATION -->
+
+            <div class="result-info">
+
+
+                <div class="info-box">
+
+                    <strong>
+                        Model Screening Score
+                    </strong>
+
+                    <span id="probabilityValue">
+                        --
+                    </span>
+
+                </div>
+
+
+                <div class="info-box">
+
+                    <strong>
+                        Risk Category
+                    </strong>
+
+                    <span id="riskCategory">
+                        --
+                    </span>
+
+                </div>
+
+
+            </div>
+
+
+            <!-- WHAT THIS MEANS -->
+
+            <div class="meaning-box">
+
+                <h3>
+                    What this means
+                </h3>
+
+                <p id="meaningText">
+                    --
+                </p>
+
+            </div>
+
+
+            <!-- REPORT BUTTON -->
+
+            <div class="report-actions">
+
+                <a
+                    id="downloadReportButton"
+                    class="download-btn"
+                    href="#"
+                    target="_blank"
+                    style="display: none;"
+                >
+                    Download PDF Report
+                </a>
+
+
+                <a
+                    href="/dashboard"
+                    class="secondary-btn"
+                >
+                    Back to Dashboard
+                </a>
+
+            </div>
+
+
+            <!-- RECOMMENDATIONS -->
+
+            <div class="recommendations">
+
+                <h3>
+                    Personalized Recommendations
+                </h3>
+
+
+                <ul id="recommendationList"></ul>
+
+            </div>
+
+
+            <!-- DISCLAIMER -->
+
+            <div class="disclaimer">
+
+                This is a preliminary screening result
+                based on the information provided.
+                It is not a medical diagnosis.
+                For medical concerns, consult a qualified
+                healthcare professional.
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+</div>
+
+
+<script>
+
+
+    // ==========================================
+    // ELEMENTS
+    // ==========================================
+
+    const form =
+        document.getElementById(
+            "clinicalForm"
+        );
+
+
+    const message =
+        document.getElementById(
+            "message"
+        );
+
+
+    const loading =
+        document.getElementById(
+            "loading"
+        );
+
+
+    const resultCard =
+        document.getElementById(
+            "resultCard"
+        );
+
+
+    const riskScore =
+        document.getElementById(
+            "riskScore"
+        );
+
+
+    const riskBadge =
+        document.getElementById(
+            "riskBadge"
+        );
+
+
+    const probabilityValue =
+        document.getElementById(
+            "probabilityValue"
+        );
+
+
+    const riskCategory =
+        document.getElementById(
+            "riskCategory"
+        );
+
+
+    const meaningText =
+        document.getElementById(
+            "meaningText"
+        );
+
+
+    const downloadReportButton =
+        document.getElementById(
+            "downloadReportButton"
+        );
+
+
+    const recommendationList =
+        document.getElementById(
+            "recommendationList"
+        );
+
+
+    // ==========================================
+    // SHOW ERROR
+    // ==========================================
+
+    function showError(text) {
+
+        message.textContent = text;
+
+        message.className =
+            "message error-message";
+
+        message.style.display =
+            "block";
+    }
+
+
+    // ==========================================
+    // HIDE MESSAGE
+    // ==========================================
+
+    function hideMessage() {
+
+        message.style.display =
+            "none";
+
+        message.textContent =
+            "";
+    }
+
+
+    // ==========================================
+    // INTERPRETATION
+    // ==========================================
+
+    function getInterpretation(riskLevel) {
+
+        const level =
+            String(
+                riskLevel || ""
+            )
+            .toLowerCase()
+            .trim();
+
+
+        if (level === "low") {
+
+            return "The screening indicates a low level of estimated heart disease risk based on the information provided.";
+
+        }
+
+
+        if (
+            level === "moderate" ||
+            level === "medium"
+        ) {
+
+            return "The screening indicates a moderate level of estimated heart disease risk based on the information provided.";
+
+        }
+
+
+        if (level === "high") {
+
+            return "The screening indicates a high level of estimated heart disease risk based on the information provided.";
+
+        }
+
+
+        return "The screening result is based on the information provided.";
+
+    }
+
+
+    // ==========================================
+    // FORM SUBMIT
+    // ==========================================
+
+    form.addEventListener(
+        "submit",
+        async function(event) {
+
+            event.preventDefault();
+
+            hideMessage();
+
+            resultCard.style.display =
+                "none";
+
+            loading.style.display =
+                "block";
+
+
+            try {
+
+
+                // =================================
+                // GET VALUES
+                // =================================
+
+                const data = {
+
+                    age: parseInt(
+                        document.getElementById(
+                            "age"
+                        ).value
+                    ),
+
+                    sex: parseInt(
+                        document.getElementById(
+                            "sex"
+                        ).value
+                    ),
+
+                    cp: parseInt(
+                        document.getElementById(
+                            "cp"
+                        ).value
+                    ),
+
+                    trestbps: parseFloat(
+                        document.getElementById(
+                            "trestbps"
+                        ).value
+                    ),
+
+                    chol: parseFloat(
+                        document.getElementById(
+                            "chol"
+                        ).value
+                    ),
+
+                    fbs: parseInt(
+                        document.getElementById(
+                            "fbs"
+                        ).value
+                    ),
+
+                    restecg: parseInt(
+                        document.getElementById(
+                            "restecg"
+                        ).value
+                    ),
+
+                    thalach: parseFloat(
+                        document.getElementById(
+                            "thalach"
+                        ).value
+                    ),
+
+                    exang: parseInt(
+                        document.getElementById(
+                            "exang"
+                        ).value
+                    ),
+
+                    oldpeak: parseFloat(
+                        document.getElementById(
+                            "oldpeak"
+                        ).value
+                    ),
+
+                    slope: parseInt(
+                        document.getElementById(
+                            "slope"
+                        ).value
+                    ),
+
+                    ca: parseInt(
+                        document.getElementById(
+                            "ca"
+                        ).value
+                    ),
+
+                    thal: parseInt(
+                        document.getElementById(
+                            "thal"
+                        ).value
+                    )
+
+                };
+
+
+                // =================================
+                // SEND REQUEST
+                // =================================
+
+                const response =
+                    await fetch(
+                        "/api/predict",
+                        {
+
+                            method:
+                                "POST",
+
+                            headers: {
+                                "Content-Type":
+                                    "application/json"
+                            },
+
+                            body:
+                                JSON.stringify(
+                                    data
+                                )
+
+                        }
+                    );
+
+
+                const result =
+                    await response.json();
+
+
+                // =================================
+                // HANDLE ERROR
+                // =================================
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        result.message ||
+                        "Unable to process clinical screening."
+                    );
+
+                }
+
+
+                // =================================
+                // SCORE
+                // =================================
+
+                const probability =
+                    Number(
+                        result.risk_score
+                    );
+
+
+                if (
+                    !Number.isFinite(
+                        probability
+                    )
+                ) {
+
+                    throw new Error(
+                        "Invalid screening score received from the server."
+                    );
+
+                }
+
+
+                const formattedProbability =
+                    probability.toFixed(2) + "%";
+
+
+                // =================================
+                // RISK LEVEL
+                // =================================
+
+                const riskLevel =
+                    result.risk_level ||
+                    "--";
+
+
+                // =================================
+                // DISPLAY
+                // =================================
+
+                riskScore.textContent =
+                    formattedProbability;
+
+                probabilityValue.textContent =
+                    formattedProbability;
+
+                riskBadge.textContent =
+                    riskLevel;
+
+                riskCategory.textContent =
+                    riskLevel;
+
+
+                meaningText.textContent =
+                    getInterpretation(
+                        riskLevel
+                    );
+
+
+                // =================================
+                // PDF REPORT
+                // =================================
+
+                if (
+                    result.assessment_id
+                ) {
+
+                    downloadReportButton.href =
+                        `/api/report/${result.assessment_id}`;
+
+                    downloadReportButton.style.display =
+                        "inline-block";
+
+                } else {
+
+                    downloadReportButton.style.display =
+                        "none";
+
+                }
+
+
+                // =================================
+                // RECOMMENDATIONS
+                // =================================
+
+                recommendationList.innerHTML =
+                    "";
+
+
+                if (
+                    result.recommendations &&
+                    result.recommendations.length
+                ) {
+
+                    result.recommendations.forEach(
+                        function(item) {
+
+                            const li =
+                                document.createElement(
+                                    "li"
+                                );
+
+                            li.textContent =
+                                item;
+
+                            recommendationList.appendChild(
+                                li
+                            );
+
+                        }
+                    );
+
+                } else {
+
+                    const li =
+                        document.createElement(
+                            "li"
+                        );
+
+                    li.textContent =
+                        "Maintain healthy lifestyle habits and follow regular health check-ups.";
+
+                    recommendationList.appendChild(
+                        li
+                    );
+
+                }
+
+
+                // =================================
+                // SHOW RESULT
+                // =================================
+
+                resultCard.style.display =
+                    "block";
+
+
+                resultCard.scrollIntoView({
+                    behavior: "smooth"
+                });
+
+
+            } catch (error) {
+
+                console.error(
+                    "Clinical screening error:",
+                    error
+                );
+
+
+                showError(
+                    error.message ||
+                    "Something went wrong. Please try again."
+                );
+
+
+            } finally {
+
+                loading.style.display =
+                    "none";
+
+            }
+
+        }
+    );
+
+</script>
+
+
+</body>
+
+</html>
